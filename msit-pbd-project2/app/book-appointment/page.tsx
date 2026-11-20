@@ -5,8 +5,51 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useState } from "react";
 
+const clinicians = [
+  {
+    name: "Dr. Maria Santos",
+    specialty: "Clinical Psychologist",
+    description:
+      "Provides compassionate support for anxiety, stress, and personal growth.",
+  },
+  {
+    name: "Dr. Paolo Reyes",
+    specialty: "Psychiatrist",
+    description:
+      "Helps clients understand their mental health and find practical paths toward wellness.",
+  },
+  {
+    name: "Dr. Ana Cruz",
+    specialty: "Counseling Therapist",
+    description:
+      "Supports individuals and families through life transitions and relationship concerns.",
+  },
+  {
+    name: "Dr. Elena Garcia",
+    specialty: "Behavioral Therapist",
+    description:
+      "Works with clients on healthy routines, coping strategies, and emotional resilience.",
+  },
+  {
+    name: "Dr. Miguel Lim",
+    specialty: "Clinical Counselor",
+    description:
+      "Offers a supportive space for self-discovery, adjustment, and personal development.",
+  },
+  {
+    name: "Dr. Sofia Villanueva",
+    specialty: "Family Therapist",
+    description:
+      "Helps families strengthen communication and navigate challenging experiences together.",
+  },
+];
+
 export default function BookAppointment() {
   const [search, setSearch] = useState("");
+  const visibleClinicians =
+    search.length === 0
+      ? 0
+      : Math.min(clinicians.length, 1 + Math.floor((search.length - 1) / 3));
 
   return (
     <main className="flex min-h-screen w-full flex-col bg-[rgb(215_203_169)]">
@@ -44,62 +87,30 @@ export default function BookAppointment() {
               ×
             </button>
           </div>
-          <div className="mt-10 grid w-full max-w-5xl gap-6 md:grid-cols-3">
-            <article className="flex flex-col rounded-xl bg-[#b9c99b] p-6 text-black">
-              <h2 className="text-xl font-semibold">Dr. Maria Santos</h2>
-              <p className="mt-2 font-semibold text-[#315b46]">
-                Clinical Psychologist
-              </p>
-              <p className="mt-4 text-sm">
-                Provides compassionate support for anxiety, stress, and
-                personal growth.
-              </p>
-              <div className="mt-auto pt-6">
-                <Link
-                  href="/appointment-calendar"
-                  className="mx-auto flex w-fit items-center justify-center rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+          {visibleClinicians > 0 && (
+            <div className="mt-10 grid w-full max-w-5xl gap-6 md:grid-cols-3">
+              {clinicians.slice(0, visibleClinicians).map((clinician) => (
+                <article
+                  key={clinician.name}
+                  className="flex flex-col rounded-xl bg-[#b9c99b] p-6 text-black"
                 >
-                  Book
-                </Link>
-              </div>
-            </article>
-            <article className="flex flex-col rounded-xl bg-[#b9c99b] p-6 text-black">
-              <h2 className="text-xl font-semibold">Dr. Paolo Reyes</h2>
-              <p className="mt-2 font-semibold text-[#315b46]">
-                Psychiatrist
-              </p>
-              <p className="mt-4 text-sm">
-                Helps clients understand their mental health and find
-                practical paths toward wellness.
-              </p>
-              <div className="mt-auto pt-6">
-                <Link
-                  href="/appointment-calendar"
-                  className="mx-auto flex w-fit items-center justify-center rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
-                >
-                  Book
-                </Link>
-              </div>
-            </article>
-            <article className="flex flex-col rounded-xl bg-[#b9c99b] p-6 text-black">
-              <h2 className="text-xl font-semibold">Dr. Ana Cruz</h2>
-              <p className="mt-2 font-semibold text-[#315b46]">
-                Counseling Therapist
-              </p>
-              <p className="mt-4 text-sm">
-                Supports individuals and families through life transitions and
-                relationship concerns.
-              </p>
-              <div className="mt-auto pt-6">
-                <Link
-                  href="/appointment-calendar"
-                  className="mx-auto flex w-fit items-center justify-center rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
-                >
-                  Book
-                </Link>
-              </div>
-            </article>
-          </div>
+                  <h2 className="text-xl font-semibold">{clinician.name}</h2>
+                  <p className="mt-2 font-semibold text-[#315b46]">
+                    {clinician.specialty}
+                  </p>
+                  <p className="mt-4 text-sm">{clinician.description}</p>
+                  <div className="mt-auto pt-6">
+                    <Link
+                      href="/appointment-calendar"
+                      className="mx-auto flex w-fit items-center justify-center rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+                    >
+                      Book
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <Footer />
