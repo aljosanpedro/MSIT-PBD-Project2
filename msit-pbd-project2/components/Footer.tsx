@@ -12,7 +12,7 @@ export default function Footer() {
       alt="Kalagyo Davao Tele-Mental Health"
       width={120}
       height={32}
-      className="h-full w-auto object-contain"
+      className="h-1/2 w-auto object-contain"
     />
   );
 
@@ -22,12 +22,12 @@ export default function Footer() {
       className="flex h-16 w-full shrink-0 items-center justify-between border-t border-[#153f2e]/50 px-4"
     >
       {pathname === "/" ? (
-        logo
+        <span className="inline-flex h-full w-auto items-center">{logo}</span>
       ) : (
         <Link
           href="/"
           aria-label="Go to home page"
-          className="inline-flex h-1/2 w-auto transition-transform duration-100 active:translate-y-0.5"
+          className="inline-flex h-full w-auto items-center transition-transform duration-100 active:translate-y-0.5"
         >
           {logo}
         </Link>
