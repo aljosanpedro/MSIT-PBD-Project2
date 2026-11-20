@@ -85,6 +85,8 @@ export default function AppointmentCalendar() {
         return;
       }
 
+      sessionStorage.setItem("kalagyo-appointment-booked", "true");
+      window.dispatchEvent(new Event("kalagyo:appointment-booked"));
       setSelectedTime(time);
     } catch (error) {
       setErrorMessage(

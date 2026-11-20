@@ -11,6 +11,8 @@ export default function Header() {
   const router = useRouter();
   const [bookPressed, setBookPressed] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [hasBookedAppointment, setHasBookedAppointment] = useState(false);
+  const [hasPaidPayment, setHasPaidPayment] = useState(false);
   const [authError, setAuthError] = useState("");
   const isCurrentPage = (href: string) => pathname === href;
 
@@ -44,6 +46,29 @@ export default function Header() {
     };
   }, []);
 
+  useEffect(() => {
+    const updateBookingState = () => {
+      setHasBookedAppointment(
+        sessionStorage.getItem("kalagyo-appointment-booked") === "true",
+      );
+      setHasPaidPayment(
+        sessionStorage.getItem("kalagyo-payment-submitted") === "true",
+      );
+    };
+
+    updateBookingState();
+    window.addEventListener("kalagyo:appointment-booked", updateBookingState);
+    window.addEventListener("kalagyo:payment-submitted", updateBookingState);
+
+    return () => {
+      window.removeEventListener(
+        "kalagyo:appointment-booked",
+        updateBookingState,
+      );
+      window.removeEventListener("kalagyo:payment-submitted", updateBookingState);
+    };
+  }, []);
+
   const handleLogout = async () => {
     setAuthError("");
     const supabase = createClient();
@@ -55,6 +80,10 @@ export default function Header() {
     }
 
     setIsLoggedIn(false);
+    sessionStorage.removeItem("kalagyo-appointment-booked");
+    sessionStorage.removeItem("kalagyo-payment-submitted");
+    window.dispatchEvent(new Event("kalagyo:appointment-booked"));
+    window.dispatchEvent(new Event("kalagyo:payment-submitted"));
     router.push("/", { scroll: false });
   };
 
@@ -89,7 +118,9 @@ export default function Header() {
           {logo}
         </Link>
       )}
-      {isCurrentPage("/book-appointment") || !isLoggedIn ? (
+      {isCurrentPage("/book-appointment") ||
+      !isLoggedIn ||
+      hasBookedAppointment ? (
         <span className="ml-auto inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-gray-400 bg-gray-300 px-0 text-[0.5rem] font-light leading-none text-gray-500">
           Book Appointment
         </span>
@@ -104,7 +135,7 @@ export default function Header() {
           Book Appointment
         </Link>
       )}
-      {isCurrentPage("/payments") || !isLoggedIn ? (
+      {isCurrentPage("/payments") || !isLoggedIn || hasPaidPayment ? (
         <span className="inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-gray-400 bg-gray-300 px-2 text-[0.45rem] font-light leading-none text-gray-500">
           Make a Payment
         </span>

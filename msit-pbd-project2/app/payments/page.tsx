@@ -55,6 +55,8 @@ export default function Payments() {
         return;
       }
 
+      sessionStorage.setItem("kalagyo-payment-submitted", "true");
+      window.dispatchEvent(new Event("kalagyo:payment-submitted"));
       setShowConfirmation(true);
     } catch (error) {
       setPaymentMessage(
