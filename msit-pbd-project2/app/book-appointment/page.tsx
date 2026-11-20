@@ -31,15 +31,33 @@ export default function BookAppointment() {
       }
 
       const escapedTerm = searchTerm.replace(/[%_(),]/g, "\\$&");
+      const filters = [
+        `name.ilike.%${escapedTerm}%`,
+        `role.ilike.%${escapedTerm}%`,
+        `description.ilike.%${escapedTerm}%`,
+        `days_available.ilike.%${escapedTerm}%`,
+        `times_available.ilike.%${escapedTerm}%`,
+      ];
+      const timeMatch = searchTerm.match(
+        /^(\d{1,2})(?::?(\d{2}))?\s*(AM|PM)$/i,
+      );
+
+      if (timeMatch) {
+        const hour = Number(timeMatch[1]);
+        const minutes = timeMatch[2] ?? "00";
+        const period = timeMatch[3].toUpperCase();
+        filters.push(
+          `times_available.ilike.%${hour}:${minutes} ${period}%`,
+        );
+      }
+
       const supabase = createClient();
       const { data, error } = await supabase
         .from("clinicians")
         .select(
           "id, name, role, description, days_available, times_available",
         )
-        .or(
-          `name.ilike.%${escapedTerm}%,role.ilike.%${escapedTerm}%,description.ilike.%${escapedTerm}%,days_available.ilike.%${escapedTerm}%,times_available.ilike.%${escapedTerm}%`,
-        )
+        .or(filters.join(","))
         .order("name")
         .limit(20);
 
