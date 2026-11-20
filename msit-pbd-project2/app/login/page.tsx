@@ -1,7 +1,12 @@
+"use client";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+  const router = useRouter();
+
   return (
     <main className="flex min-h-screen w-full flex-col bg-[rgb(215_203_169)]">
       <Header />
@@ -10,7 +15,13 @@ export default function Login() {
           <h1 className="text-center text-3xl font-semibold text-[#153f2e]">
             Log In
           </h1>
-          <form className="mt-8 flex w-full max-w-md flex-col gap-5">
+          <form
+            className="mt-8 flex w-full max-w-md flex-col gap-5"
+            onSubmit={(event) => {
+              event.preventDefault();
+              router.push("/");
+            }}
+          >
             <label className="flex flex-col gap-1 text-black">
               <span className="font-semibold">Email</span>
               <input
