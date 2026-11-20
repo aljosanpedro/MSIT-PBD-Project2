@@ -4,11 +4,14 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Dropdown from "@/components/Dropdown";
 import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Questions() {
+  const router = useRouter();
   const [submissionMessage, setSubmissionMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -71,7 +74,7 @@ export default function Questions() {
       }
 
       form.reset();
-      setSubmissionMessage("Question submitted successfully.");
+      setShowConfirmation(true);
     } catch (error) {
       setSubmissionMessage(
         error instanceof Error
@@ -197,6 +200,30 @@ export default function Questions() {
           </form>
         </div>
       </div>
+      {showConfirmation && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 px-4"
+        >
+          <div className="w-full max-w-md rounded-xl bg-[#b9c99b] p-6 text-center text-black shadow-lg">
+            <h2 className="text-xl font-semibold">
+              Your question was submitted.
+            </h2>
+            <p className="mt-3 text-sm">
+              Thank you for reaching out to Kalagyo. We appreciate your
+              question and will get back to you soon.
+            </p>
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="mt-6 rounded-full border border-black bg-[#315b46] px-5 py-2 font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+            >
+              Return Home
+            </button>
+          </div>
+        </div>
+      )}
       <Footer />
     </main>
   );
