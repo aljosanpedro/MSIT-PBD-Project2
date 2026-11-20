@@ -26,6 +26,7 @@ export default function Footer() {
       ) : (
         <Link
           href="/"
+          scroll={false}
           aria-label="Go to home page"
           className="inline-flex h-full w-auto items-center transition-transform duration-100 active:translate-y-0.5"
         >
@@ -36,10 +37,10 @@ export default function Footer() {
         aria-label="Footer navigation"
         className="flex flex-col justify-center text-[0.5rem] leading-3 text-blue-900 underline"
       >
-        <Link href="/book-appointment">Book Appointment</Link>
-        <Link href="/questions">Ask Questions</Link>
-        <Link href="/payments">Make a Payment</Link>
-        <Link href="/login">Log In</Link>
+        <Link href="/book-appointment" scroll={false}>Book Appointment</Link>
+        <Link href="/questions" scroll={false}>Ask Questions</Link>
+        <Link href="/payments" scroll={false}>Make a Payment</Link>
+        <Link href="/login" scroll={false}>Log In</Link>
       </nav>
       <div className="flex -translate-y-[3px] flex-col justify-center text-[0.5rem] leading-3 text-black">
         <a href="tel:09186897244" className="text-blue-900 underline">

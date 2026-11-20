@@ -14,7 +14,7 @@ export default function Header() {
   const openQuestions = () => {
     setBookPressed(true);
     window.setTimeout(() => {
-      router.push("/questions");
+      router.push("/questions", { scroll: false });
     }, 120);
   };
   const logo = (
@@ -35,6 +35,7 @@ export default function Header() {
       ) : (
         <Link
           href="/"
+          scroll={false}
           aria-label="Go to home page"
           className="inline-flex h-full w-auto transition-transform duration-100 active:translate-y-0.5"
         >
@@ -48,6 +49,7 @@ export default function Header() {
       ) : (
         <Link
           href="/book-appointment"
+          scroll={false}
           className={`ml-auto inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[#315b46] px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5 ${
             bookPressed ? "translate-y-0.5" : ""
           }`}
@@ -74,6 +76,7 @@ export default function Header() {
       ) : (
         <Link
           href="/payments"
+          scroll={false}
           className="inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-black bg-transparent px-2 text-[0.45rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
         >
           Make a Payment
@@ -86,6 +89,7 @@ export default function Header() {
       ) : (
         <Link
           href="/login"
+          scroll={false}
           className="inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[rgb(200_150_100)] px-0 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
         >
           Log In
