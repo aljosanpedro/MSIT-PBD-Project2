@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
@@ -17,14 +18,16 @@ export default function Login() {
     setIsSubmitting(true);
 
     const formData = new FormData(event.currentTarget);
-    const email = formData.get("email");
+    const emailValue = formData.get("email");
     const password = formData.get("password");
 
-    if (typeof email !== "string" || typeof password !== "string") {
+    if (typeof emailValue !== "string" || typeof password !== "string") {
       setErrorMessage("Enter your email and password.");
       setIsSubmitting(false);
       return;
     }
+
+    const email = emailValue.trim().toLowerCase();
 
     try {
       const supabase = createClient();
@@ -92,6 +95,12 @@ export default function Login() {
             >
               {isSubmitting ? "Logging In..." : "Log In"}
             </button>
+            <p className="text-center text-sm text-black">
+              No account?{" "}
+              <Link href="/signup" className="text-blue-900 underline">
+                Sign Up
+              </Link>
+            </p>
           </form>
         </div>
       </div>

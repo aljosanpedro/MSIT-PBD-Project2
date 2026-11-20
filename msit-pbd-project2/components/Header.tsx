@@ -3,13 +3,60 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const [bookPressed, setBookPressed] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authError, setAuthError] = useState("");
   const isCurrentPage = (href: string) => pathname === href;
+
+  useEffect(() => {
+    const supabase = createClient();
+    let isMounted = true;
+
+    void supabase.auth.getSession().then(({ data, error }) => {
+      if (!isMounted) {
+        return;
+      }
+
+      if (error) {
+        setAuthError(error.message);
+        return;
+      }
+
+      setIsLoggedIn(Boolean(data.session));
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(Boolean(session));
+      setAuthError("");
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    setAuthError("");
+    const supabase = createClient();
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      setAuthError(error.message);
+      return;
+    }
+
+    setIsLoggedIn(false);
+    router.push("/", { scroll: false });
+  };
 
   const openQuestions = () => {
     setBookPressed(true);
@@ -82,7 +129,15 @@ export default function Header() {
           Make a Payment
         </Link>
       )}
-      {isCurrentPage("/login") ? (
+      {isLoggedIn ? (
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-red-600 px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5"
+        >
+          Log Out
+        </button>
+      ) : isCurrentPage("/login") ? (
         <span className="inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-gray-300 px-0 text-[0.5rem] font-semibold leading-none text-black">
           Log In
         </span>
@@ -94,6 +149,11 @@ export default function Header() {
         >
           Log In
         </Link>
+      )}
+      {authError && (
+        <p role="alert" className="absolute right-4 top-full text-xs text-red-700">
+          {authError}
+        </p>
       )}
     </header>
   );
