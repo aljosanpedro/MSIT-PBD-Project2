@@ -43,8 +43,8 @@ export default function Footer() {
         <Link href="/login" scroll={false}>Log In</Link>
       </nav>
       <div className="flex -translate-y-[3px] flex-col justify-center text-[0.5rem] leading-3 text-black">
-        <a href="tel:09186897244" className="text-blue-900 underline">
-          0918 689 7244
+        <a href="tel:091748392651" className="text-blue-900 underline">
+          0917 483 92651
         </a>
         <a
           href="mailto:kalagyo.dvo@gmail.com"
