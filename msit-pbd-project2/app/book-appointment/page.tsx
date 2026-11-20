@@ -2,54 +2,66 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const clinicians = [
-  {
-    name: "Dr. Maria Santos",
-    specialty: "Clinical Psychologist",
-    description:
-      "Provides compassionate support for anxiety, stress, and personal growth.",
-  },
-  {
-    name: "Dr. Paolo Reyes",
-    specialty: "Psychiatrist",
-    description:
-      "Helps clients understand their mental health and find practical paths toward wellness.",
-  },
-  {
-    name: "Dr. Ana Cruz",
-    specialty: "Counseling Therapist",
-    description:
-      "Supports individuals and families through life transitions and relationship concerns.",
-  },
-  {
-    name: "Dr. Elena Garcia",
-    specialty: "Behavioral Therapist",
-    description:
-      "Works with clients on healthy routines, coping strategies, and emotional resilience.",
-  },
-  {
-    name: "Dr. Miguel Lim",
-    specialty: "Clinical Counselor",
-    description:
-      "Offers a supportive space for self-discovery, adjustment, and personal development.",
-  },
-  {
-    name: "Dr. Sofia Villanueva",
-    specialty: "Family Therapist",
-    description:
-      "Helps families strengthen communication and navigate challenging experiences together.",
-  },
-];
+type Clinician = {
+  id: number;
+  name: string;
+  role: string;
+  description: string;
+  days_available: string;
+  times_available: string;
+};
 
 export default function BookAppointment() {
   const [search, setSearch] = useState("");
-  const visibleClinicians =
-    search.length === 0
-      ? 0
-      : Math.min(clinicians.length, 1 + Math.floor((search.length - 1) / 3));
+  const [clinicians, setClinicians] = useState<Clinician[]>([]);
+  const [searchError, setSearchError] = useState("");
+
+  useEffect(() => {
+    const searchTerm = search.trim();
+    let isActive = true;
+    const timeout = window.setTimeout(async () => {
+      if (!searchTerm) {
+        setClinicians([]);
+        setSearchError("");
+        return;
+      }
+
+      const escapedTerm = searchTerm.replace(/[%_(),]/g, "\\$&");
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("clinicians")
+        .select(
+          "id, name, role, description, days_available, times_available",
+        )
+        .or(
+          `name.ilike.%${escapedTerm}%,role.ilike.%${escapedTerm}%,description.ilike.%${escapedTerm}%,days_available.ilike.%${escapedTerm}%,times_available.ilike.%${escapedTerm}%`,
+        )
+        .order("name")
+        .limit(20);
+
+      if (!isActive) {
+        return;
+      }
+
+      if (error) {
+        setSearchError(error.message);
+        setClinicians([]);
+        return;
+      }
+
+      setSearchError("");
+      setClinicians(data ?? []);
+    }, 250);
+
+    return () => {
+      isActive = false;
+      window.clearTimeout(timeout);
+    };
+  }, [search]);
 
   return (
     <main className="flex min-h-screen w-full flex-col bg-[rgb(215_203_169)]">
@@ -75,13 +87,18 @@ export default function BookAppointment() {
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search by date, service, symptoms, clinician..."
+              placeholder="Search by day of week, service, symptoms, clinician name..."
               className="w-full rounded border border-gray-300 bg-white px-10 py-2 text-sm text-black placeholder:text-xs placeholder:text-gray-400"
             />
           </div>
-          {visibleClinicians > 0 && (
+          {searchError && (
+            <p role="alert" className="mt-6 text-center text-sm text-red-700">
+              {searchError}
+            </p>
+          )}
+          {clinicians.length > 0 && (
             <div className="mt-10 grid w-full max-w-5xl gap-6 md:grid-cols-3">
-              {clinicians.slice(0, visibleClinicians).map((clinician) => (
+              {clinicians.map((clinician) => (
                 <article
                   key={clinician.name}
                   className="flex flex-col rounded-xl bg-[#b9c99b] p-6 text-black"
@@ -92,19 +109,25 @@ export default function BookAppointment() {
                         {clinician.name}
                       </h2>
                       <p className="mt-2 font-semibold text-[#315b46]">
-                        {clinician.specialty}
+                        {clinician.role}
                       </p>
                     </div>
                     <div className="shrink-0 rounded bg-[#d7cba9] px-2 py-1 text-right text-[0.55rem] leading-3">
                       <p className="font-semibold">Available</p>
-                      <p>Mon - Fri</p>
-                      <p>8:00 AM - 5:00 PM</p>
+                      <p>{clinician.days_available}</p>
+                      <p>{clinician.times_available}</p>
                     </div>
                   </div>
                   <p className="mt-4 text-sm">{clinician.description}</p>
                   <div className="mt-auto pt-6">
                     <Link
-                      href={`/appointment-calendar?clinician=${encodeURIComponent(clinician.name)}`}
+                      href={`/appointment-calendar?clinician=${encodeURIComponent(
+                        clinician.name,
+                      )}&days=${encodeURIComponent(
+                        clinician.days_available,
+                      )}&times=${encodeURIComponent(
+                        clinician.times_available,
+                      )}&role=${encodeURIComponent(clinician.role)}`}
                       className="mx-auto flex w-fit items-center justify-center rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
                     >
                       Book

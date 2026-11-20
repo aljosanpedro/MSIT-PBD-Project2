@@ -19,6 +19,58 @@ const timeSlots = [
   "4:00 PM",
   "5:00 PM",
 ];
+const dayNames = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+const allAvailableDays = dayNames.slice(1);
+
+const parseTime = (value: string) => {
+  const match = value.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+
+  if (!match) {
+    return null;
+  }
+
+  let hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  const period = match[3].toUpperCase();
+
+  if (period === "PM" && hours !== 12) {
+    hours += 12;
+  }
+  if (period === "AM" && hours === 12) {
+    hours = 0;
+  }
+
+  return hours * 60 + minutes;
+};
+
+const parseAvailableDays = (value: string) => {
+  if (!value) {
+    return allAvailableDays;
+  }
+
+  if (value.includes(" - ")) {
+    const [start, end] = value.split(" - ");
+    const startIndex = dayNames.indexOf(start);
+    const endIndex = dayNames.indexOf(end);
+
+    if (startIndex >= 0 && endIndex >= startIndex) {
+      return dayNames.slice(startIndex, endIndex + 1);
+    }
+  }
+
+  return value
+    .split(",")
+    .map((day) => day.trim())
+    .filter((day) => dayNames.includes(day));
+};
 
 export default function AppointmentCalendar() {
   const router = useRouter();
@@ -26,6 +78,12 @@ export default function AppointmentCalendar() {
   const [today, setToday] = useState({ year: 2026, month: 5, date: 1 });
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
   const [clinicianName, setClinicianName] = useState("Selected clinician");
+  const [clinicianRole, setClinicianRole] = useState("");
+  const [availableDays, setAvailableDays] = useState(allAvailableDays);
+  const [availableTimeRange, setAvailableTimeRange] = useState({
+    start: 0,
+    end: 24 * 60,
+  });
   const [selectedTime, setSelectedTime] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,10 +101,39 @@ export default function AppointmentCalendar() {
     currentMonth.getFullYear() < today.year ||
     (currentMonth.getFullYear() === today.year &&
       currentMonth.getMonth() <= today.month);
+  const isDateAvailable = (date: number) => {
+    const weekday = dayNames[
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth(), date).getDay()
+    ];
+    return availableDays.includes(weekday);
+  };
+  const isTimeAvailable = (time: string) => {
+    const minutes = parseTime(time);
+    return (
+      minutes !== null &&
+      minutes >= availableTimeRange.start &&
+      minutes <= availableTimeRange.end
+    );
+  };
+  const selectedDateLabel =
+    selectedDate === null
+      ? ""
+      : `${currentMonth.toLocaleString("en-US", {
+          month: "long",
+        })} ${selectedDate}, ${currentMonth.getFullYear()}, ${
+          dayNames[
+            new Date(
+              currentMonth.getFullYear(),
+              currentMonth.getMonth(),
+              selectedDate,
+            ).getDay()
+          ]
+        }`;
   const returnHome = () => {
     setCurrentMonth(new Date(today.year, today.month, 1));
     setSelectedDate(null);
     setClinicianName("Selected clinician");
+    setClinicianRole("");
     setSelectedTime("");
     setErrorMessage("");
     setIsSubmitting(false);
@@ -69,6 +156,24 @@ export default function AppointmentCalendar() {
     return () => window.clearTimeout(updateCurrentDate);
   }, []);
 
+  useEffect(() => {
+    const updateClinicianAvailability = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const times = params.get("times") ?? "";
+      const [startTime, endTime] = times.split(" - ");
+
+      setClinicianName(params.get("clinician") ?? "Selected clinician");
+      setClinicianRole(params.get("role") ?? "");
+      setAvailableDays(parseAvailableDays(params.get("days") ?? ""));
+      setAvailableTimeRange({
+        start: parseTime(startTime ?? "") ?? 0,
+        end: parseTime(endTime ?? "") ?? 24 * 60,
+      });
+    }, 0);
+
+    return () => window.clearTimeout(updateClinicianAvailability);
+  }, []);
+
   const changeMonth = (amount: number) => {
     setCurrentMonth(
       (month) => new Date(month.getFullYear(), month.getMonth() + amount, 1),
@@ -79,7 +184,12 @@ export default function AppointmentCalendar() {
   };
 
   const requestAppointment = async (time: string) => {
-    if (selectedDate === null || isSubmitting) {
+    if (
+      selectedDate === null ||
+      isSubmitting ||
+      !isDateAvailable(selectedDate) ||
+      !isTimeAvailable(time)
+    ) {
       return;
     }
 
@@ -163,13 +273,14 @@ export default function AppointmentCalendar() {
                 const todayValue =
                   today.year * 10000 + (today.month + 1) * 100 + today.date;
                 const isPastDate = dateValue < todayValue;
+                const isUnavailableDay = !isDateAvailable(date);
                 const isRowEnd = date % 7 === 0 || date === daysInMonth;
 
                 return (
                   <div key={date} className="contents">
                     <button
                       type="button"
-                      disabled={isPastDate}
+                      disabled={isPastDate || isUnavailableDay}
                       aria-pressed={selectedDate === date}
                       onClick={() => {
                         setSelectedDate((currentDate) =>
@@ -177,12 +288,12 @@ export default function AppointmentCalendar() {
                         );
                         setSelectedTime("");
                       }}
-                      className={`aspect-square rounded border border-[#153f2e]/30 text-sm transition-colors ${
-                        isPastDate
+                      className={`aspect-square rounded border border-[#153f2e]/30 text-sm transition duration-100 active:translate-y-0.5 ${
+                        isPastDate || isUnavailableDay
                           ? "cursor-not-allowed bg-gray-300 text-gray-500"
                           : selectedDate === date
-                            ? "bg-[#315b46] text-white"
-                            : "bg-white hover:bg-[#d7cba9]"
+                              ? "cursor-pointer bg-[#315b46] text-white"
+                              : "cursor-pointer bg-white hover:bg-[#d7cba9]"
                       }`}
                     >
                       {date}
@@ -192,16 +303,24 @@ export default function AppointmentCalendar() {
                       Math.ceil(selectedDate / 7) === Math.ceil(date / 7) && (
                       <div className="col-span-7 mt-2 rounded-lg bg-[#d7cba9] p-4">
                         <h3 className="text-center font-semibold">
-                          Available times for {monthLabel} {selectedDate}
+                          Available times for {selectedDateLabel}
                         </h3>
+                        <p className="mt-1 text-center text-xs">
+                          {clinicianName}
+                          {clinicianRole ? ` · ${clinicianRole}` : ""}
+                        </p>
                         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
                           {timeSlots.map((time) => (
                             <button
                               type="button"
                               key={time}
-                              disabled={isSubmitting}
+                              disabled={isSubmitting || !isTimeAvailable(time)}
                               onClick={() => requestAppointment(time)}
-                              className="rounded border border-[#153f2e]/50 bg-white px-3 py-2 text-sm transition-colors hover:bg-[#315b46] hover:text-white"
+                              className={`rounded border border-[#153f2e]/50 px-3 py-2 text-sm transition duration-100 active:translate-y-0.5 ${
+                                isTimeAvailable(time)
+                                  ? "cursor-pointer bg-white hover:bg-[#315b46] hover:text-white"
+                                  : "cursor-not-allowed bg-gray-300 text-gray-500"
+                              }`}
                             >
                               {time}
                             </button>
@@ -232,7 +351,9 @@ export default function AppointmentCalendar() {
               Appointment request has been sent.
             </h2>
             <p className="mt-3 text-sm">
-              {clinicianName} on {monthLabel} {selectedDate} at {selectedTime}.
+              {clinicianName}
+              {clinicianRole ? ` · ${clinicianRole}` : ""} on{" "}
+              {selectedDateLabel} at {selectedTime}.
             </p>
             <button
               type="button"
