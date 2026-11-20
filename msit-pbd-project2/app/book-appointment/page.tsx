@@ -78,14 +78,6 @@ export default function BookAppointment() {
               placeholder="Search by date, service, symptoms, clinician..."
               className="w-full rounded border border-gray-300 bg-white px-10 py-2 text-sm text-black placeholder:text-xs placeholder:text-gray-400"
             />
-            <button
-              type="button"
-              aria-label="Clear search"
-              onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-xl leading-none text-gray-500"
-            >
-              ×
-            </button>
           </div>
           {visibleClinicians > 0 && (
             <div className="mt-10 grid w-full max-w-5xl gap-6 md:grid-cols-3">
