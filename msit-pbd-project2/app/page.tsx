@@ -44,13 +44,13 @@ export default function Home() {
         </button>
         <Link
           href="/payments"
-          className="ml-2 inline-flex h-5 translate-y-px self-center items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+          className="ml-2 inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-black bg-transparent px-2 text-[0.45rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
         >
           Make a Payment
         </Link>
         <Link
           href="/login"
-          className="ml-2 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[rgb(200_150_100)] px-0 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+          className="ml-2 inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[rgb(200_150_100)] px-0 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
         >
           Log In
         </Link>
