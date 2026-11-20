@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function BookAppointment() {
@@ -54,12 +55,12 @@ export default function BookAppointment() {
                 personal growth.
               </p>
               <div className="mt-auto pt-6">
-                <button
-                  type="button"
-                  className="mx-auto block rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+                <Link
+                  href="/appointment-calendar"
+                  className="mx-auto flex w-fit items-center justify-center rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
                 >
                   Book
-                </button>
+                </Link>
               </div>
             </article>
             <article className="flex flex-col rounded-xl bg-[#b9c99b] p-6 text-black">
@@ -72,12 +73,12 @@ export default function BookAppointment() {
                 practical paths toward wellness.
               </p>
               <div className="mt-auto pt-6">
-                <button
-                  type="button"
-                  className="mx-auto block rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+                <Link
+                  href="/appointment-calendar"
+                  className="mx-auto flex w-fit items-center justify-center rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
                 >
                   Book
-                </button>
+                </Link>
               </div>
             </article>
             <article className="flex flex-col rounded-xl bg-[#b9c99b] p-6 text-black">
@@ -90,12 +91,12 @@ export default function BookAppointment() {
                 relationship concerns.
               </p>
               <div className="mt-auto pt-6">
-                <button
-                  type="button"
-                  className="mx-auto block rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+                <Link
+                  href="/appointment-calendar"
+                  className="mx-auto flex w-fit items-center justify-center rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
                 >
                   Book
-                </button>
+                </Link>
               </div>
             </article>
           </div>
