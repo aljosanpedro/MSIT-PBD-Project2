@@ -38,6 +38,15 @@ export default function AppointmentCalendar() {
     0,
   ).getDate();
   const dates = Array.from({ length: daysInMonth }, (_, index) => index + 1);
+  const returnHome = () => {
+    setCurrentMonth(new Date(2026, 5, 1));
+    setSelectedDate(null);
+    setClinicianName("Selected clinician");
+    setSelectedTime("");
+    setErrorMessage("");
+    setIsSubmitting(false);
+    router.push("/");
+  };
 
   const changeMonth = (amount: number) => {
     setCurrentMonth(
@@ -179,7 +188,7 @@ export default function AppointmentCalendar() {
             </p>
             <button
               type="button"
-              onClick={() => router.push("/")}
+              onClick={returnHome}
               className="mt-6 rounded-full border border-black bg-[#315b46] px-5 py-2 font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
             >
               Confirm

@@ -23,6 +23,18 @@ export default function Payments() {
   const actionButtonClass = canUseActions
     ? "inline-flex h-5 cursor-pointer items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
     : "inline-flex h-5 cursor-not-allowed items-center justify-center rounded-full border border-gray-400 bg-gray-300 px-3 text-[0.5rem] font-semibold leading-none text-gray-500";
+  const returnHome = () => {
+    setBookingCode("");
+    setShowBill(false);
+    setShowBillChanges(false);
+    setPaymentMessage("");
+    setBillChangeMessage("");
+    setIsSubmitting(false);
+    setIsBillChangeSubmitting(false);
+    setShowConfirmation(false);
+    setShowBillChangeConfirmation(false);
+    router.push("/");
+  };
 
   const handlePay = async () => {
     if (!canPay || isSubmitting) {
@@ -260,7 +272,7 @@ export default function Payments() {
             </p>
             <button
               type="button"
-              onClick={() => router.push("/")}
+              onClick={returnHome}
               className="mt-6 rounded-full border border-black bg-[#315b46] px-5 py-2 font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
             >
               Return Home
@@ -283,7 +295,7 @@ export default function Payments() {
             </p>
             <button
               type="button"
-              onClick={() => router.push("/")}
+              onClick={returnHome}
               className="mt-6 rounded-full border border-black bg-[#315b46] px-5 py-2 font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
             >
               Return Home

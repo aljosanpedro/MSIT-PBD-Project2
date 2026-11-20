@@ -12,6 +12,12 @@ export default function Questions() {
   const [submissionMessage, setSubmissionMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const returnHome = () => {
+    setSubmissionMessage("");
+    setIsSubmitting(false);
+    setShowConfirmation(false);
+    router.push("/");
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -216,7 +222,7 @@ export default function Questions() {
             </p>
             <button
               type="button"
-              onClick={() => router.push("/")}
+              onClick={returnHome}
               className="mt-6 rounded-full border border-black bg-[#315b46] px-5 py-2 font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
             >
               Return Home
