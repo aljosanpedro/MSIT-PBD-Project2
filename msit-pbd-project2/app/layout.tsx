@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ScrollRestoration from "@/components/ScrollRestoration";
+import { LanguageProvider } from "@/components/LanguageProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,8 +29,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <ScrollRestoration />
-        {children}
+        <LanguageProvider>
+          <ScrollRestoration />
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

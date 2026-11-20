@@ -3,9 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/components/LanguageProvider";
 
 export default function Footer() {
   const pathname = usePathname();
+  const { language, setLanguage } = useLanguage();
   const logo = (
     <Image
       src="/kalagyo_logo_full.png"
@@ -67,15 +69,12 @@ export default function Footer() {
         <span>Davao del Sur, Philippines</span>
       </div>
       <div className="flex flex-col justify-center text-[0.5rem] leading-3 text-black">
-        <a href="#english" className="text-blue-900 underline">
+        <button type="button" onClick={() => setLanguage("en")} className={`text-left text-blue-900 underline ${language === "en" ? "font-bold" : ""}`}>
           English
-        </a>
-        <a href="#tagalog" className="text-blue-900 underline">
+        </button>
+        <button type="button" onClick={() => setLanguage("tl")} className={`text-left text-blue-900 underline ${language === "tl" ? "font-bold" : ""}`}>
           Tagalog
-        </a>
-        <a href="#bisaya" className="text-blue-900 underline">
-          Bisaya
-        </a>
+        </button>
         <span>Legal stuff applies</span>
       </div>
     </footer>
