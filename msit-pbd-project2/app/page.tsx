@@ -13,29 +13,25 @@ export default function Home() {
           <p className="text-xl font-normal">Davao Tele-Mental Health</p>
         </div>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-          posuere, nisl at consequat tincidunt, libero justo tincidunt justo,
-          vitae posuere sem erat a neque.
+          Kalagyo connects people in Davao and beyond with compassionate,
+          accessible tele-mental health support from the comfort of home.
         </p>
         <p>
-          Praesent commodo, massa a tincidunt faucibus, lectus nibh suscipit
-          lorem, sed ullamcorper purus justo non erat. Curabitur vitae sapien
-          sed nisl consequat posuere.
+          Our platform makes it easier to find a clinician who understands
+          your needs and to take the first step toward better mental
+          well-being.
         </p>
         <p>
-          Mauris finibus, arcu sed facilisis posuere, justo arcu suscipit
-          lectus, a consequat nisl erat in neque. Donec eget libero vel nulla
-          consequat volutpat.
+          Browse available professionals, learn about their areas of support,
+          and book an appointment that fits your schedule.
         </p>
         <p>
-          Suspendisse potenti. Aenean tincidunt, nisl at convallis feugiat,
-          libero lacus feugiat lectus, vitae blandit risus sem at augue.
-          Vestibulum ante ipsum primis in faucibus orci luctus et ultrices.
+          Whether you are managing stress, navigating a life transition, or
+          looking for ongoing support, you do not have to face it alone.
         </p>
         <p>
-          Nam euismod, erat vel tincidunt commodo, justo mauris tincidunt
-          libero, at efficitur sem magna at arcu. Pellentesque habitant morbi
-          tristique senectus et netus et malesuada fames.
+          Start by exploring our services, asking a question, or booking a
+          consultation with a member of the Kalagyo care community.
         </p>
       </section>
       <div className="flex-1" />
