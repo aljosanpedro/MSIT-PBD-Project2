@@ -86,10 +86,21 @@ export default function BookAppointment() {
                   key={clinician.name}
                   className="flex flex-col rounded-xl bg-[#b9c99b] p-6 text-black"
                 >
-                  <h2 className="text-xl font-semibold">{clinician.name}</h2>
-                  <p className="mt-2 font-semibold text-[#315b46]">
-                    {clinician.specialty}
-                  </p>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h2 className="text-xl font-semibold">
+                        {clinician.name}
+                      </h2>
+                      <p className="mt-2 font-semibold text-[#315b46]">
+                        {clinician.specialty}
+                      </p>
+                    </div>
+                    <div className="shrink-0 rounded bg-[#d7cba9] px-2 py-1 text-right text-[0.55rem] leading-3">
+                      <p className="font-semibold">Available</p>
+                      <p>Mon - Fri</p>
+                      <p>8:00 AM - 5:00 PM</p>
+                    </div>
+                  </div>
                   <p className="mt-4 text-sm">{clinician.description}</p>
                   <div className="mt-auto pt-6">
                     <Link
