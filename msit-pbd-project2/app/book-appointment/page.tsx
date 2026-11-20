@@ -101,7 +101,7 @@ export default function BookAppointment() {
                   <p className="mt-4 text-sm">{clinician.description}</p>
                   <div className="mt-auto pt-6">
                     <Link
-                      href="/appointment-calendar"
+                      href={`/appointment-calendar?clinician=${encodeURIComponent(clinician.name)}`}
                       className="mx-auto flex w-fit items-center justify-center rounded-full border border-black bg-[#315b46] px-4 py-1 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
                     >
                       Book
