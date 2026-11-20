@@ -42,13 +42,13 @@ export default function Header() {
         </Link>
       )}
       {isCurrentPage("/book-appointment") ? (
-        <span className="ml-6 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-gray-300 px-0 text-[0.5rem] font-semibold leading-none text-black">
+        <span className="ml-6 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-gray-300 px-0 text-[0.5rem] font-semibold leading-none text-black md:ml-auto">
           Book Appointment
         </span>
       ) : (
         <Link
           href="/book-appointment"
-          className={`ml-6 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[#315b46] px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5 ${
+          className={`ml-6 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[#315b46] px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5 md:ml-auto ${
             bookPressed ? "translate-y-0.5" : ""
           }`}
         >
