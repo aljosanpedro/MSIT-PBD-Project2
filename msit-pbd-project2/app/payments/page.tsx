@@ -12,15 +12,20 @@ export default function Payments() {
   const [showBill, setShowBill] = useState(false);
   const [showBillChanges, setShowBillChanges] = useState(false);
   const [paymentMessage, setPaymentMessage] = useState("");
+  const [billChangeMessage, setBillChangeMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBillChangeSubmitting, setIsBillChangeSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showBillChangeConfirmation, setShowBillChangeConfirmation] =
+    useState(false);
   const canUseActions = bookingCode.length === 6;
+  const canPay = canUseActions && !showBillChanges;
   const actionButtonClass = canUseActions
     ? "inline-flex h-5 cursor-pointer items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
     : "inline-flex h-5 cursor-not-allowed items-center justify-center rounded-full border border-gray-400 bg-gray-300 px-3 text-[0.5rem] font-semibold leading-none text-gray-500";
 
   const handlePay = async () => {
-    if (!canUseActions || isSubmitting) {
+    if (!canPay || isSubmitting) {
       return;
     }
 
@@ -47,6 +52,50 @@ export default function Payments() {
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleBillChangeSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    setBillChangeMessage("");
+    setIsBillChangeSubmitting(true);
+
+    const formData = new FormData(form);
+    const requestedChange = formData.get("bill-change");
+    const details = formData.get("bill-change-details");
+
+    if (typeof requestedChange !== "string" || typeof details !== "string") {
+      setBillChangeMessage("Complete all required fields.");
+      setIsBillChangeSubmitting(false);
+      return;
+    }
+
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from("bill_change_requests").insert({
+        booking_code: bookingCode,
+        requested_change: requestedChange,
+        details,
+      });
+
+      if (error) {
+        setBillChangeMessage(error.message);
+        return;
+      }
+
+      form.reset();
+      setShowBillChangeConfirmation(true);
+    } catch (error) {
+      setBillChangeMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to submit your request. Please try again.",
+      );
+    } finally {
+      setIsBillChangeSubmitting(false);
     }
   };
 
@@ -114,7 +163,10 @@ export default function Payments() {
             </div>
           )}
           {showBillChanges && (
-            <form className="mx-auto mt-4 flex w-1/3 flex-col gap-4 rounded-lg bg-gray-200 p-4 text-sm text-black">
+            <form
+              onSubmit={handleBillChangeSubmit}
+              className="mx-auto mt-4 flex w-1/3 flex-col gap-4 rounded-lg bg-gray-200 p-4 text-sm text-black"
+            >
               <fieldset className="flex flex-col gap-2">
                 <legend className="font-semibold">
                   What change would you like to request?
@@ -162,18 +214,24 @@ export default function Payments() {
               </label>
               <button
                 type="submit"
-                className="mx-auto rounded-full border border-black bg-[#315b46] px-4 py-1 font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+                disabled={isBillChangeSubmitting}
+                className="mx-auto rounded-full border border-black bg-[#315b46] px-4 py-1 font-semibold text-white transition-transform duration-100 active:translate-y-0.5 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500"
               >
-                Submit
+                {isBillChangeSubmitting ? "Submitting..." : "Submit"}
               </button>
+              {billChangeMessage && (
+                <p role="status" className="text-center text-sm">
+                  {billChangeMessage}
+                </p>
+              )}
             </form>
           )}
           <button
             type="button"
-            disabled={!canUseActions}
+            disabled={!canPay}
             onClick={handlePay}
             className={`mx-auto mt-5 block rounded-full border px-6 py-1.5 text-sm font-semibold ${
-              canUseActions
+              canPay
                 ? "cursor-pointer border-black bg-[#315b46] text-white transition-transform duration-100 active:translate-y-0.5"
                 : "cursor-not-allowed border-gray-400 bg-gray-300 text-gray-500"
             }`}
@@ -199,6 +257,29 @@ export default function Payments() {
             </h2>
             <p className="mt-3 text-sm">
               Thank you. Your payment request has been received.
+            </p>
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="mt-6 rounded-full border border-black bg-[#315b46] px-5 py-2 font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+            >
+              Return Home
+            </button>
+          </div>
+        </div>
+      )}
+      {showBillChangeConfirmation && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 px-4"
+        >
+          <div className="w-full max-w-md rounded-xl bg-[#b9c99b] p-6 text-center text-black shadow-lg">
+            <h2 className="text-xl font-semibold">
+              Bill changes request submitted.
+            </h2>
+            <p className="mt-3 text-sm">
+              Thank you. Your request has been received.
             </p>
             <button
               type="button"
