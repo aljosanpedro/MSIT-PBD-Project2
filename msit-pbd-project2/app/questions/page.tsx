@@ -1,8 +1,88 @@
+"use client";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Dropdown from "@/components/Dropdown";
+import { getSupabaseClient } from "@/utils/supabase";
+import { useState } from "react";
 
 export default function Questions() {
+  const [submissionMessage, setSubmissionMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmissionMessage("");
+    setIsSubmitting(true);
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const name = formData.get("name");
+    const contact = formData.get("contact");
+    const questionType = formData.get("question-type");
+    const question = formData.get("question");
+    const fileValue = formData.get("supporting-files");
+    const file =
+      fileValue instanceof File && fileValue.size > 0 ? fileValue : null;
+
+    if (
+      typeof name !== "string" ||
+      typeof contact !== "string" ||
+      typeof questionType !== "string" ||
+      typeof question !== "string"
+    ) {
+      setSubmissionMessage("Complete all required fields.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const supabase = getSupabaseClient();
+      let fileUrl: string | null = null;
+
+      if (file) {
+        const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const filePath = `${crypto.randomUUID()}-${safeFileName}`;
+        const { error: uploadError } = await supabase.storage
+          .from("question-files")
+          .upload(filePath, file);
+
+        if (uploadError) {
+          setSubmissionMessage(uploadError.message);
+          return;
+        }
+
+        fileUrl = supabase.storage
+          .from("question-files")
+          .getPublicUrl(filePath).data.publicUrl;
+      }
+
+      const { error } = await supabase.from("questions").insert({
+        name,
+        contact,
+        question_type: questionType,
+        question,
+        file_url: fileUrl,
+      });
+
+      if (error) {
+        setSubmissionMessage(error.message);
+        return;
+      }
+
+      form.reset();
+      setSubmissionMessage("Question submitted successfully.");
+    } catch (error) {
+      setSubmissionMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to submit your question. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <main className="flex min-h-screen w-full flex-col bg-[rgb(215_203_169)]">
       <Header />
@@ -32,7 +112,10 @@ export default function Questions() {
           <h2 className="mt-10 text-center text-2xl font-semibold text-[#153f2e]">
             Still have questions?
           </h2>
-          <form className="mx-auto mt-6 flex max-w-2xl flex-col gap-5 rounded-lg bg-[#b9c99b] p-6 text-black">
+          <form
+            className="mx-auto mt-6 flex max-w-2xl flex-col gap-5 rounded-lg bg-[#b9c99b] p-6 text-black"
+            onSubmit={handleSubmit}
+          >
             <label className="flex flex-col gap-1">
               <span className="font-semibold">Name</span>
               <input
@@ -101,10 +184,16 @@ export default function Questions() {
             </div>
             <button
               type="submit"
-              className="self-center rounded-full border border-black bg-[#315b46] px-6 py-2 font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+              disabled={isSubmitting}
+              className="self-center rounded-full border border-black bg-[#315b46] px-6 py-2 font-semibold text-white transition-transform duration-100 active:translate-y-0.5 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500"
             >
-              Submit
+              {isSubmitting ? "Submitting..." : "Submit"}
             </button>
+            {submissionMessage && (
+              <p role="status" className="text-center text-sm">
+                {submissionMessage}
+              </p>
+            )}
           </form>
         </div>
       </div>
