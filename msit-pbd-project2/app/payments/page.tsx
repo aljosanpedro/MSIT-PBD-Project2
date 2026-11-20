@@ -1,7 +1,18 @@
+"use client";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useState } from "react";
 
 export default function Payments() {
+  const [bookingCode, setBookingCode] = useState("");
+  const [showBill, setShowBill] = useState(false);
+  const [showBillChanges, setShowBillChanges] = useState(false);
+  const canUseActions = bookingCode.length === 6;
+  const actionButtonClass = canUseActions
+    ? "inline-flex h-5 cursor-pointer items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+    : "inline-flex h-5 cursor-not-allowed items-center justify-center rounded-full border border-gray-400 bg-gray-300 px-3 text-[0.5rem] font-semibold leading-none text-gray-500";
+
   return (
     <main className="flex min-h-screen w-full flex-col bg-[rgb(215_203_169)]">
       <Header />
@@ -9,35 +20,125 @@ export default function Payments() {
         <h1 className="p-8 text-center text-3xl font-semibold text-[#153f2e]">
           Payments
         </h1>
-        <section className="px-8">
+        <section className="px-8 pb-8">
           <input
             type="text"
             placeholder="Place your booking code here"
+            value={bookingCode}
+            maxLength={6}
+            onChange={(event) => {
+              const value = event.target.value;
+              setBookingCode(value);
+              if (value.length !== 6) {
+                setShowBill(false);
+                setShowBillChanges(false);
+              }
+            }}
             className="mx-auto block w-1/3 rounded border border-gray-300 bg-white px-3 py-2 text-center text-black placeholder:text-gray-400 lg:w-[11.111%]"
           />
           <div className="mt-4 flex flex-nowrap justify-center gap-3">
             <button
               type="button"
-              className="inline-flex h-5 cursor-pointer items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+              disabled={!canUseActions}
+              onClick={() => {
+                setShowBill((visible) => !visible);
+                setShowBillChanges(false);
+              }}
+              className={actionButtonClass}
             >
               View Bill
             </button>
             <button
               type="button"
-              className="inline-flex h-5 cursor-pointer items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+              disabled={!canUseActions}
+              onClick={() => {
+                setShowBillChanges((visible) => !visible);
+                setShowBill(false);
+              }}
+              className={actionButtonClass}
             >
               Request Bill Changes
             </button>
-            <button
-              type="button"
-              className="inline-flex h-5 cursor-pointer items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
-            >
-              Apply Discount
-            </button>
           </div>
+          {showBill && (
+            <div className="mx-auto mt-4 w-1/3 rounded-lg bg-gray-200 p-4 text-sm text-black">
+              <div className="flex justify-between">
+                <span>Consultation</span>
+                <span>₱1,000.00</span>
+              </div>
+              <div className="mt-2 flex justify-between">
+                <span>Service fee</span>
+                <span>₱100.00</span>
+              </div>
+              <div className="mt-3 flex justify-between border-t border-gray-400 pt-2 font-semibold">
+                <span>Total</span>
+                <span>₱1,100.00</span>
+              </div>
+            </div>
+          )}
+          {showBillChanges && (
+            <form className="mx-auto mt-4 flex w-1/3 flex-col gap-4 rounded-lg bg-gray-200 p-4 text-sm text-black">
+              <fieldset className="flex flex-col gap-2">
+                <legend className="font-semibold">
+                  What change would you like to request?
+                </legend>
+                <label className="mt-2 flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="bill-change"
+                    value="amount"
+                    required
+                  />
+                  Bill amount
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="bill-change"
+                    value="service"
+                  />
+                  Service details
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="bill-change"
+                    value="personal-details"
+                  />
+                  Personal details
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="bill-change" value="other" />
+                  Other
+                </label>
+              </fieldset>
+              <label className="flex flex-col gap-1">
+                <span className="font-semibold">
+                  Any details that could help us?
+                </span>
+                <textarea
+                  name="bill-change-details"
+                  rows={4}
+                  required
+                  className="resize-y rounded border border-gray-400 bg-white px-2 py-1"
+                />
+              </label>
+              <button
+                type="submit"
+                className="mx-auto rounded-full border border-black bg-[#315b46] px-4 py-1 font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+              >
+                Submit
+              </button>
+            </form>
+          )}
           <button
             type="button"
-            className="mx-auto mt-5 block rounded-full border border-black bg-[#315b46] px-6 py-1.5 text-sm font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+            disabled={!canUseActions}
+            className={`mx-auto mt-5 block rounded-full border px-6 py-1.5 text-sm font-semibold ${
+              canUseActions
+                ? "cursor-pointer border-black bg-[#315b46] text-white transition-transform duration-100 active:translate-y-0.5"
+                : "cursor-not-allowed border-gray-400 bg-gray-300 text-gray-500"
+            }`}
           >
             Pay
           </button>
