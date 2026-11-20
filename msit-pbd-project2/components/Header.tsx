@@ -89,8 +89,8 @@ export default function Header() {
           {logo}
         </Link>
       )}
-      {isCurrentPage("/book-appointment") ? (
-        <span className="ml-auto inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-gray-300 px-0 text-[0.5rem] font-semibold leading-none text-black">
+      {isCurrentPage("/book-appointment") || !isLoggedIn ? (
+        <span className="ml-auto inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-gray-400 bg-gray-300 px-0 text-[0.5rem] font-light leading-none text-gray-500">
           Book Appointment
         </span>
       ) : (
@@ -102,6 +102,19 @@ export default function Header() {
           }`}
         >
           Book Appointment
+        </Link>
+      )}
+      {isCurrentPage("/payments") || !isLoggedIn ? (
+        <span className="inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-gray-400 bg-gray-300 px-2 text-[0.45rem] font-light leading-none text-gray-500">
+          Make a Payment
+        </span>
+      ) : (
+        <Link
+          href="/payments"
+          scroll={false}
+          className="inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-black bg-transparent px-2 text-[0.45rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+        >
+          Make a Payment
         </Link>
       )}
       <button
@@ -116,24 +129,11 @@ export default function Header() {
       >
         Ask Questions
       </button>
-      {isCurrentPage("/payments") ? (
-        <span className="inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-black bg-gray-300 px-2 text-[0.45rem] font-semibold leading-none text-black">
-          Make a Payment
-        </span>
-      ) : (
-        <Link
-          href="/payments"
-          scroll={false}
-          className="inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-black bg-transparent px-2 text-[0.45rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
-        >
-          Make a Payment
-        </Link>
-      )}
       {isLoggedIn ? (
         <button
           type="button"
           onClick={handleLogout}
-          className="inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-red-600 px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5"
+          className="inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-red-600 px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5 cursor-pointer"
         >
           Log Out
         </button>
@@ -145,7 +145,7 @@ export default function Header() {
         <Link
           href="/login"
           scroll={false}
-          className="inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[rgb(200_150_100)] px-0 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+          className="inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[#315b46] px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5"
         >
           Log In
         </Link>
