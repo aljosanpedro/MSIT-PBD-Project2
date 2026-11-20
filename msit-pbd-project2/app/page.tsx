@@ -9,6 +9,10 @@ export default function Home() {
     <main className="flex min-h-screen w-full flex-col bg-[rgb(215_203_169)]">
       <Header />
       <section className="flex-1 space-y-10 px-8 py-12 text-black">
+        <div className="space-y-2 text-center">
+          <h1 className="text-4xl font-bold">Kalagyo</h1>
+          <p className="text-xl font-normal">Davao Tele-Mental Health</p>
+        </div>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
           posuere, nisl at consequat tincidunt, libero justo tincidunt justo,
