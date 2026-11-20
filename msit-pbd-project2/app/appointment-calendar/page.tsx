@@ -3,7 +3,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -23,6 +23,7 @@ const timeSlots = [
 export default function AppointmentCalendar() {
   const router = useRouter();
   const [currentMonth, setCurrentMonth] = useState(new Date(2026, 5, 1));
+  const [today, setToday] = useState({ year: 2026, month: 5, date: 1 });
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
   const [clinicianName, setClinicianName] = useState("Selected clinician");
   const [selectedTime, setSelectedTime] = useState("");
@@ -38,8 +39,12 @@ export default function AppointmentCalendar() {
     0,
   ).getDate();
   const dates = Array.from({ length: daysInMonth }, (_, index) => index + 1);
+  const isPreviousMonth =
+    currentMonth.getFullYear() < today.year ||
+    (currentMonth.getFullYear() === today.year &&
+      currentMonth.getMonth() <= today.month);
   const returnHome = () => {
-    setCurrentMonth(new Date(2026, 5, 1));
+    setCurrentMonth(new Date(today.year, today.month, 1));
     setSelectedDate(null);
     setClinicianName("Selected clinician");
     setSelectedTime("");
@@ -47,6 +52,22 @@ export default function AppointmentCalendar() {
     setIsSubmitting(false);
     router.push("/");
   };
+
+  useEffect(() => {
+    const updateCurrentDate = window.setTimeout(() => {
+      const now = new Date();
+      const currentDate = {
+        year: now.getFullYear(),
+        month: now.getMonth(),
+        date: now.getDate(),
+      };
+
+      setToday(currentDate);
+      setCurrentMonth(new Date(currentDate.year, currentDate.month, 1));
+    }, 0);
+
+    return () => window.clearTimeout(updateCurrentDate);
+  }, []);
 
   const changeMonth = (amount: number) => {
     setCurrentMonth(
@@ -111,7 +132,8 @@ export default function AppointmentCalendar() {
             <button
               type="button"
               onClick={() => changeMonth(-1)}
-              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#315b46] text-2xl leading-none text-white transition-colors hover:bg-[#244534]"
+              disabled={isPreviousMonth}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#315b46] text-2xl leading-none text-white transition-colors hover:bg-[#244534] disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500"
               aria-label="Previous month"
             >
               ←
@@ -133,41 +155,65 @@ export default function AppointmentCalendar() {
           </div>
           <div className="mt-3 grid grid-cols-7 gap-2">
             {dates.map((date) => (
-              <button
-                type="button"
-                key={date}
-                aria-pressed={selectedDate === date}
-                onClick={() => setSelectedDate(date)}
-                className={`aspect-square rounded border border-[#153f2e]/30 text-sm transition-colors ${
-                  selectedDate === date
-                    ? "bg-[#315b46] text-white"
-                    : "bg-white hover:bg-[#d7cba9]"
-                }`}
-              >
-                {date}
-              </button>
+              (() => {
+                const dateValue =
+                  currentMonth.getFullYear() * 10000 +
+                  (currentMonth.getMonth() + 1) * 100 +
+                  date;
+                const todayValue =
+                  today.year * 10000 + (today.month + 1) * 100 + today.date;
+                const isPastDate = dateValue < todayValue;
+                const isRowEnd = date % 7 === 0 || date === daysInMonth;
+
+                return (
+                  <div key={date} className="contents">
+                    <button
+                      type="button"
+                      disabled={isPastDate}
+                      aria-pressed={selectedDate === date}
+                      onClick={() => {
+                        setSelectedDate((currentDate) =>
+                          currentDate === date ? null : date,
+                        );
+                        setSelectedTime("");
+                      }}
+                      className={`aspect-square rounded border border-[#153f2e]/30 text-sm transition-colors ${
+                        isPastDate
+                          ? "cursor-not-allowed bg-gray-300 text-gray-500"
+                          : selectedDate === date
+                            ? "bg-[#315b46] text-white"
+                            : "bg-white hover:bg-[#d7cba9]"
+                      }`}
+                    >
+                      {date}
+                    </button>
+                    {selectedDate !== null &&
+                      isRowEnd &&
+                      Math.ceil(selectedDate / 7) === Math.ceil(date / 7) && (
+                      <div className="col-span-7 mt-2 rounded-lg bg-[#d7cba9] p-4">
+                        <h3 className="text-center font-semibold">
+                          Available times for {monthLabel} {selectedDate}
+                        </h3>
+                        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
+                          {timeSlots.map((time) => (
+                            <button
+                              type="button"
+                              key={time}
+                              disabled={isSubmitting}
+                              onClick={() => requestAppointment(time)}
+                              className="rounded border border-[#153f2e]/50 bg-white px-3 py-2 text-sm transition-colors hover:bg-[#315b46] hover:text-white"
+                            >
+                              {time}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()
             ))}
           </div>
-          {selectedDate !== null && (
-            <div className="mt-6 rounded-lg bg-[#d7cba9] p-4">
-              <h3 className="text-center font-semibold">
-                Available times for {monthLabel} {selectedDate}
-              </h3>
-              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
-                {timeSlots.map((time) => (
-                  <button
-                    type="button"
-                    key={time}
-                    disabled={isSubmitting}
-                    onClick={() => requestAppointment(time)}
-                    className="rounded border border-[#153f2e]/50 bg-white px-3 py-2 text-sm transition-colors hover:bg-[#315b46] hover:text-white"
-                  >
-                    {time}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
           {errorMessage && (
             <p role="alert" className="mt-4 text-center text-sm text-red-700">
               {errorMessage}
