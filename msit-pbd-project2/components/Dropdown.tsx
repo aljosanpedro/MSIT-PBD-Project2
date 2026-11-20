@@ -12,7 +12,7 @@ export default function Dropdown({ label, children }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-2xl">
       <button
         type="button"
         aria-expanded={isOpen}
