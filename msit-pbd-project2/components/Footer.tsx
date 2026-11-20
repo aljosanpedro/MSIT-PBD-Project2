@@ -7,13 +7,19 @@ export default function Footer() {
       aria-label="Footer"
       className="flex h-16 w-full shrink-0 items-center justify-between border-t border-[#153f2e]/50 px-4"
     >
-      <Image
-        src="/kalagyo_logo_full.png"
-        alt="Kalagyo Davao Tele-Mental Health"
-        width={120}
-        height={32}
-        className="h-1/2 w-auto object-contain"
-      />
+      <Link
+        href="/"
+        aria-label="Go to home page"
+        className="inline-flex h-1/2 w-auto transition-transform duration-100 active:translate-y-0.5"
+      >
+        <Image
+          src="/kalagyo_logo_full.png"
+          alt="Kalagyo Davao Tele-Mental Health"
+          width={120}
+          height={32}
+          className="h-full w-auto object-contain"
+        />
+      </Link>
       <nav
         aria-label="Footer navigation"
         className="flex flex-col justify-center text-[0.5rem] leading-3 text-blue-900 underline"
