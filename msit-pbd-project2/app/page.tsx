@@ -37,21 +37,6 @@ export default function Home() {
           libero, at efficitur sem magna at arcu. Pellentesque habitant morbi
           tristique senectus et netus et malesuada fames.
         </p>
-        <p>
-          Donec volutpat, mi at accumsan fermentum, velit neque tincidunt
-          mauris, id congue lectus nunc nec urna. Sed vitae lectus at augue
-          malesuada consequat.
-        </p>
-        <p>
-          Phasellus vitae orci non neque posuere tincidunt. Aliquam erat
-          volutpat. Etiam at ex sed ipsum gravida tristique, quis aliquet
-          mauris placerat.
-        </p>
-        <p>
-          Nulla facilisi. Sed interdum, tortor at cursus aliquet, lorem arcu
-          efficitur sem, vitae commodo justo augue nec lectus. Morbi at mauris
-          ac sem feugiat luctus.
-        </p>
       </section>
       <div className="flex-1" />
       <Footer />
