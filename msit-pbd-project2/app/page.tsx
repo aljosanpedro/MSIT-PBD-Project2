@@ -29,7 +29,7 @@ export default function Home() {
         />
         <Link
           href="/book-appointment"
-          className={`ml-6 inline-flex h-5 self-center items-center justify-center rounded-full border border-black bg-[#315b46] px-3 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5 ${
+          className={`ml-6 inline-flex h-5 w-24 -translate-y-px self-center items-center justify-center rounded-full border border-black bg-[#315b46] px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5 ${
             bookPressed ? "translate-y-0.5" : ""
           }`}
         >
@@ -38,7 +38,7 @@ export default function Home() {
         <button
           type="button"
           onClick={openQuestions}
-          className="ml-2 inline-flex h-5 translate-y-px self-center items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+          className="ml-2 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-transparent px-0 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
         >
           Ask Questions
         </button>
@@ -47,6 +47,12 @@ export default function Home() {
           className="ml-2 inline-flex h-5 translate-y-px self-center items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
         >
           Make a Payment
+        </Link>
+        <Link
+          href="/login"
+          className="ml-2 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[rgb(200_150_100)] px-0 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+        >
+          Log In
         </Link>
       </header>
     </main>
