@@ -1,25 +1,37 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+  const logo = (
+    <Image
+      src="/kalagyo_logo_full.png"
+      alt="Kalagyo Davao Tele-Mental Health"
+      width={120}
+      height={32}
+      className="h-full w-auto object-contain"
+    />
+  );
+
   return (
     <footer
       aria-label="Footer"
       className="flex h-16 w-full shrink-0 items-center justify-between border-t border-[#153f2e]/50 px-4"
     >
-      <Link
-        href="/"
-        aria-label="Go to home page"
-        className="inline-flex h-1/2 w-auto transition-transform duration-100 active:translate-y-0.5"
-      >
-        <Image
-          src="/kalagyo_logo_full.png"
-          alt="Kalagyo Davao Tele-Mental Health"
-          width={120}
-          height={32}
-          className="h-full w-auto object-contain"
-        />
-      </Link>
+      {pathname === "/" ? (
+        logo
+      ) : (
+        <Link
+          href="/"
+          aria-label="Go to home page"
+          className="inline-flex h-1/2 w-auto transition-transform duration-100 active:translate-y-0.5"
+        >
+          {logo}
+        </Link>
+      )}
       <nav
         aria-label="Footer navigation"
         className="flex flex-col justify-center text-[0.5rem] leading-3 text-blue-900 underline"
