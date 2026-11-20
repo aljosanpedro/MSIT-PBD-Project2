@@ -56,7 +56,7 @@ export default function Footer() {
           alt="Social media"
           width={219}
           height={39}
-          className="h-[18px] w-auto object-contain"
+          className="h-[18px] w-auto translate-y-[6px] object-contain"
         />
       </div>
       <div className="flex flex-col justify-center text-[0.5rem] leading-3 text-black">
