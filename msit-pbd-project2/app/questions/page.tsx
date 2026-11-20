@@ -3,7 +3,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Dropdown from "@/components/Dropdown";
-import { getSupabaseClient } from "@/utils/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 
 export default function Questions() {
@@ -37,7 +37,7 @@ export default function Questions() {
     }
 
     try {
-      const supabase = getSupabaseClient();
+      const supabase = createClient();
       let fileUrl: string | null = null;
 
       if (file) {

@@ -2,7 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { getSupabaseClient } from "@/utils/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 
 export default function Payments() {
@@ -25,7 +25,7 @@ export default function Payments() {
     setIsSubmitting(true);
 
     try {
-      const supabase = getSupabaseClient();
+      const supabase = createClient();
       const { error } = await supabase
         .from("payments")
         .insert({ booking_code: bookingCode });

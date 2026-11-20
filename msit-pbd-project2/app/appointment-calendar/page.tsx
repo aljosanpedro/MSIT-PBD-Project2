@@ -2,7 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { getSupabaseClient } from "@/utils/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -61,7 +61,7 @@ export default function AppointmentCalendar() {
         new URLSearchParams(window.location.search).get("clinician") ??
         clinicianName;
       setClinicianName(selectedClinician);
-      const supabase = getSupabaseClient();
+      const supabase = createClient();
       const appointmentDate = `${currentMonth.getFullYear()}-${String(
         currentMonth.getMonth() + 1,
       ).padStart(2, "0")}-${String(selectedDate).padStart(2, "0")}`;
