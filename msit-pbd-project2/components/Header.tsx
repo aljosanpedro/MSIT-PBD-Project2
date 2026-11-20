@@ -29,7 +29,7 @@ export default function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 w-full items-center border-b border-[#153f2e]/50 bg-[rgb(215_203_169)] px-4">
+    <header className="sticky top-0 z-10 flex h-16 w-full items-center gap-2 border-b border-[#153f2e]/50 bg-[rgb(215_203_169)] px-4">
       {isCurrentPage("/") ? (
         logo
       ) : (
@@ -42,13 +42,13 @@ export default function Header() {
         </Link>
       )}
       {isCurrentPage("/book-appointment") ? (
-        <span className="ml-6 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-gray-300 px-0 text-[0.5rem] font-semibold leading-none text-black md:ml-auto">
+        <span className="ml-auto inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-gray-300 px-0 text-[0.5rem] font-semibold leading-none text-black">
           Book Appointment
         </span>
       ) : (
         <Link
           href="/book-appointment"
-          className={`ml-6 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[#315b46] px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5 md:ml-auto ${
+          className={`ml-auto inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[#315b46] px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5 ${
             bookPressed ? "translate-y-0.5" : ""
           }`}
         >
@@ -59,7 +59,7 @@ export default function Header() {
         type="button"
         onClick={openQuestions}
         disabled={isCurrentPage("/questions")}
-        className={`ml-2 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black px-0 text-[0.5rem] font-semibold leading-none ${
+        className={`inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black px-0 text-[0.5rem] font-semibold leading-none ${
           isCurrentPage("/questions")
             ? "bg-gray-300 text-black"
             : "cursor-pointer bg-transparent text-black transition-transform duration-100 active:translate-y-0.5"
@@ -68,25 +68,25 @@ export default function Header() {
         Ask Questions
       </button>
       {isCurrentPage("/payments") ? (
-        <span className="ml-2 inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-black bg-gray-300 px-2 text-[0.45rem] font-semibold leading-none text-black">
+        <span className="inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-black bg-gray-300 px-2 text-[0.45rem] font-semibold leading-none text-black">
           Make a Payment
         </span>
       ) : (
         <Link
           href="/payments"
-          className="ml-2 inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-black bg-transparent px-2 text-[0.45rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+          className="inline-flex h-5 translate-y-px self-center items-center justify-center whitespace-nowrap rounded-full border border-black bg-transparent px-2 text-[0.45rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
         >
           Make a Payment
         </Link>
       )}
       {isCurrentPage("/login") ? (
-        <span className="ml-2 inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-gray-300 px-0 text-[0.5rem] font-semibold leading-none text-black">
+        <span className="inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-gray-300 px-0 text-[0.5rem] font-semibold leading-none text-black">
           Log In
         </span>
       ) : (
         <Link
           href="/login"
-          className="ml-2 inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[rgb(200_150_100)] px-0 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
+          className="inline-flex h-5 w-20 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[rgb(200_150_100)] px-0 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
         >
           Log In
         </Link>
