@@ -2,16 +2,50 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { getSupabaseClient } from "@/utils/supabase";
 import { useState } from "react";
 
 export default function Payments() {
   const [bookingCode, setBookingCode] = useState("");
   const [showBill, setShowBill] = useState(false);
   const [showBillChanges, setShowBillChanges] = useState(false);
+  const [paymentMessage, setPaymentMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const canUseActions = bookingCode.length === 6;
   const actionButtonClass = canUseActions
     ? "inline-flex h-5 cursor-pointer items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
     : "inline-flex h-5 cursor-not-allowed items-center justify-center rounded-full border border-gray-400 bg-gray-300 px-3 text-[0.5rem] font-semibold leading-none text-gray-500";
+
+  const handlePay = async () => {
+    if (!canUseActions || isSubmitting) {
+      return;
+    }
+
+    setPaymentMessage("");
+    setIsSubmitting(true);
+
+    try {
+      const supabase = getSupabaseClient();
+      const { error } = await supabase
+        .from("payments")
+        .insert({ booking_code: bookingCode });
+
+      if (error) {
+        setPaymentMessage(error.message);
+        return;
+      }
+
+      setPaymentMessage("Payment request submitted.");
+    } catch (error) {
+      setPaymentMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to submit payment. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <main className="flex min-h-screen w-full flex-col bg-[rgb(215_203_169)]">
@@ -134,14 +168,20 @@ export default function Payments() {
           <button
             type="button"
             disabled={!canUseActions}
+            onClick={handlePay}
             className={`mx-auto mt-5 block rounded-full border px-6 py-1.5 text-sm font-semibold ${
               canUseActions
                 ? "cursor-pointer border-black bg-[#315b46] text-white transition-transform duration-100 active:translate-y-0.5"
                 : "cursor-not-allowed border-gray-400 bg-gray-300 text-gray-500"
             }`}
           >
-            Pay
+            {isSubmitting ? "Submitting..." : "Pay"}
           </button>
+          {paymentMessage && (
+            <p role="status" className="mt-3 text-center text-sm text-black">
+              {paymentMessage}
+            </p>
+          )}
         </section>
       </div>
       <Footer />
