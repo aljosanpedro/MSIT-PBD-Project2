@@ -29,7 +29,7 @@ export default function Home() {
         />
         <Link
           href="/book-appointment"
-          className={`ml-6 inline-flex h-5 w-24 -translate-y-px self-center items-center justify-center rounded-full border border-black bg-[#315b46] px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5 ${
+          className={`ml-6 inline-flex h-5 w-24 translate-y-px self-center items-center justify-center rounded-full border border-black bg-[#315b46] px-0 text-[0.5rem] font-semibold leading-none text-white transition-transform duration-100 active:translate-y-0.5 ${
             bookPressed ? "translate-y-0.5" : ""
           }`}
         >
