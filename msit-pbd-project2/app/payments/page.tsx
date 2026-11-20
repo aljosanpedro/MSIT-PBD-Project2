@@ -3,14 +3,17 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Payments() {
+  const router = useRouter();
   const [bookingCode, setBookingCode] = useState("");
   const [showBill, setShowBill] = useState(false);
   const [showBillChanges, setShowBillChanges] = useState(false);
   const [paymentMessage, setPaymentMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const canUseActions = bookingCode.length === 6;
   const actionButtonClass = canUseActions
     ? "inline-flex h-5 cursor-pointer items-center justify-center rounded-full border border-black bg-transparent px-3 text-[0.5rem] font-semibold leading-none text-black transition-transform duration-100 active:translate-y-0.5"
@@ -35,7 +38,7 @@ export default function Payments() {
         return;
       }
 
-      setPaymentMessage("Payment request submitted.");
+      setShowConfirmation(true);
     } catch (error) {
       setPaymentMessage(
         error instanceof Error
@@ -184,6 +187,29 @@ export default function Payments() {
           )}
         </section>
       </div>
+      {showConfirmation && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 px-4"
+        >
+          <div className="w-full max-w-md rounded-xl bg-[#b9c99b] p-6 text-center text-black shadow-lg">
+            <h2 className="text-xl font-semibold">
+              Payment request submitted.
+            </h2>
+            <p className="mt-3 text-sm">
+              Thank you. Your payment request has been received.
+            </p>
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="mt-6 rounded-full border border-black bg-[#315b46] px-5 py-2 font-semibold text-white transition-transform duration-100 active:translate-y-0.5"
+            >
+              Return Home
+            </button>
+          </div>
+        </div>
+      )}
       <Footer />
     </main>
   );
