@@ -41,9 +41,16 @@ export default function Footer() {
         <Link href="/payments">Make a Payment</Link>
         <Link href="/login">Log In</Link>
       </nav>
-      <div className="flex flex-col justify-center text-[0.5rem] leading-3 text-black">
-        <span>0918 689 7244</span>
-        <span>kalagyo.dvo@gmail.com</span>
+      <div className="flex -translate-y-[3px] flex-col justify-center text-[0.5rem] leading-3 text-black">
+        <a href="tel:09186897244" className="text-blue-900 underline">
+          0918 689 7244
+        </a>
+        <a
+          href="mailto:kalagyo.dvo@gmail.com"
+          className="text-blue-900 underline"
+        >
+          kalagyo.dvo@gmail.com
+        </a>
         <Image
           src="/socmed_logos.png"
           alt="Social media"
